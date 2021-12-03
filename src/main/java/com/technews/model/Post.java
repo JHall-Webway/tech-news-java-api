@@ -1,7 +1,7 @@
 package com.technews.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,8 +12,8 @@ import java.util.Objects;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "post")
-
 public class Post implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -24,16 +24,24 @@ public class Post implements Serializable {
     @Transient
     private int voteCount;
     private Integer userId;
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "posted_at")
     private Date postedAt = new Date();
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "updated_at")
     private Date updatedAt = new Date();
+
+    // Need to use FetchType.LAZY to resolve multiple bags exception
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+
+    public Post() {
+    }
 
     public Post(Integer id, String title, String postUrl, int voteCount, Integer userId) {
         this.id = id;
@@ -125,25 +133,15 @@ public class Post implements Serializable {
                 Objects.equals(getTitle(), post.getTitle()) &&
                 Objects.equals(getPostUrl(), post.getPostUrl()) &&
                 Objects.equals(getUserName(), post.getUserName()) &&
-                Objects.equals(getId(), post.getUserId()) &&
+                Objects.equals(getUserId(), post.getUserId()) &&
                 Objects.equals(getPostedAt(), post.getPostedAt()) &&
-                Objects.equals(getPostedAt(), post.getUpdatedAt()) &&
+                Objects.equals(getUpdatedAt(), post.getUpdatedAt()) &&
                 Objects.equals(getComments(), post.getComments());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                getId(),
-                getTitle(),
-                getPostUrl(),
-                getUserName(),
-                getVoteCount(),
-                getUserId(),
-                getPostedAt(),
-                getUpdatedAt(),
-                getComments()
-        );
+        return Objects.hash(getId(), getTitle(), getPostUrl(), getUserName(), getVoteCount(), getUserId(), getPostedAt(), getUpdatedAt(), getComments());
     }
 
     @Override

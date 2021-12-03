@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-public class Postcontroller {
+public class PostController {
     @Autowired
     PostRepository repository;
     @Autowired
